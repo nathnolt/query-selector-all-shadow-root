@@ -1,4 +1,4 @@
-# query-selector-all-shadow-root
+# query-selector-all-shadow-root ( $$$ )
 a simple querySelectorAll method for shadow dom
 
 ## Usage
