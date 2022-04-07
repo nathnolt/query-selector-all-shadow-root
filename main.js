@@ -1,5 +1,5 @@
 // Traverses the dom depth first
-function domTraverser(rootNode, callback, onlyElements) {
+function domTraverser(rootNode, callback, onlyElements=false) {
 
 	// 1A. call the callback on the root node (if it's not an element)
 	// because it's not an element node, we don't care for it's children
