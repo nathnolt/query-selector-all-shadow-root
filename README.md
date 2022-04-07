@@ -11,7 +11,7 @@ From a different starting node:
 
 ```js
 var firstMatchingElement = shadowSelector('#some-element ul')
-var matchingElements = shadowSelector('button', firstMatchingElement)
+var matchingElements = shadowSelectorAll('button', firstMatchingElement)
 ```
 
 ## Note
