@@ -1,49 +1,36 @@
-// Traverses the dom depth first
-function domTraverser(rootNode, callback, onlyElements=false) {
-
-	// 1A. call the callback on the root node (if it's not an element)
-	// because it's not an element node, we don't care for it's children
-	const nodeIsElement = rootNode.nodeType === Node.ELEMENT_NODE
-	if (!nodeIsElement) {
-		if(onlyElements) { return }
-		callback(rootNode)
-		return
-	}
-	
-	// 1B. call the callback on the root node (if it's an element)
-	callback(rootNode)
-	
-	// 2. loop through the childNodes of the rootNode
-	const children = rootNode.childNodes
-	if (children.length) {
-		for (var i = 0; i < children.length; i++) {
-			domTraverser(children[i], callback, onlyElements)
-		}
-	}
-	
-	// 3. check for shadow DOM, and loop through it's children
-	const shadowRoot = rootNode.shadowRoot
-	if (shadowRoot) {
-		const shadowChildren = shadowRoot.childNodes
-		for (var i = 0; i < shadowChildren.length; i++) {
-			domTraverser(shadowChildren[i], callback, onlyElements)
-		}
-	}
-}
-
-// querySelectorAll method
-function shadowSelectorAll(selector, rootNode=document.body) {
+function $$$(selector, rootNode=document.body) {
 	const arr = []
-	domTraverser(rootNode, function(node) {
-		if (node.matches(selector)) {
+	
+	const traverser = node => {
+		// 1. decline all nodes that are not elements
+		if(node.nodeType !== Node.ELEMENT_NODE) {
+			return
+		}
+		
+		// 2. add the node to the array, if it matches the selector
+		if(node.matches(selector)) {
 			arr.push(node)
 		}
-	}, true)
+		
+		// 3. loop through the children
+		const children = node.children
+		if (children.length) {
+			for(const child of children) {
+				traverser(child)
+			}
+		}
+		
+		// 4. check for shadow DOM, and loop through it's children
+		const shadowRoot = node.shadowRoot
+		if (shadowRoot) {
+			const shadowChildren = shadowRoot.children
+			for(const shadowChild of shadowChildren) {
+				traverser(shadowChild)
+			}
+		}
+	}
+	
+	traverser(rootNode)
+	
 	return arr
-}
-
-// querySelector method
-function shadowSelector(selector, rootNode=document.body) {
-	const arr = shadowSelectorAll(selector, rootNode)
-	return arr[0]
 }
